@@ -44,6 +44,9 @@ const converters = [
     }
     return { insert: "\n", attributes: {...attributes, header: event.node.level}};
 }},
+{ filter: 'list', lineAttribute: true, attribute: (node, event, attributes) => {
+    changeAttribute(attributes, event, 'list', node.listType);
+}},
 { filter: 'paragraph', lineAttribute: true, makeDelta: (event, attributes) => {
     if (event.entering) {
         return null;

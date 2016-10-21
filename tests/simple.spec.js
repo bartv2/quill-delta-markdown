@@ -46,4 +46,28 @@ describe('toDelta', () => {
 
     expect(result).to.deep.equal(expected);
   });
+
+  it('converts bullet list', () => {
+    const input = "- line 1\n- line 2\n";
+    const expected = [
+      { insert: 'line 1'}, { insert: "\n", attributes: { list: 'bullet' } },
+      { insert: 'line 2' }, { insert: "\n", attributes: { list: 'bullet' } }
+    ];
+
+    var result = toDelta(input);
+
+    expect(result).to.deep.equal(expected);
+  });
+
+  it('converts ordered list', () => {
+    const input = "1. line 1\n2. line 2\n";
+    const expected = [
+      { insert: 'line 1'}, { insert: "\n", attributes: { list: 'ordered' } },
+      { insert: 'line 2' }, { insert: "\n", attributes: { list: 'ordered' } }
+    ];
+
+    var result = toDelta(input);
+
+    expect(result).to.deep.equal(expected);
+  });
 });
