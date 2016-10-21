@@ -25,4 +25,15 @@ describe('toDelta', () => {
     expect(result).to.deep.equal(expected);
   });
 
+
+  it('converts text with link', () => {
+    const input = 'Hello [world](url)';
+    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "src": 'url' } }, { "insert": "\n" }];
+
+    var reader = new commonmark.Parser();
+    var parsed = reader.parse(input);
+    var result = toDelta(parsed);
+
+    expect(result).to.deep.equal(expected);
+  });
 });
