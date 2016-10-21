@@ -1,16 +1,20 @@
 import {isEmpty} from 'lodash';
 import {without} from 'lodash';
 
+function changeAttribute(attributes, event, attribute, value)
+{
+    if (event.entering) {
+        attributes[attribute] = value;
+    } else {
+        attributes = without(attributes, attribute);
+    }
+    return attributes;
+}
 const converters = [
 { filter: 'emph', attribute: 'italic' },
 { filter: 'strong', attribute: 'bold' },
 { filter: 'link', attribute: (node, event, attributes) => {
-    if (event.entering) {
-        attributes['src'] = node.destination;
-    } else {
-        attributes = without(attributes, 'src');
-    }
-    return attributes;
+    return changeAttribute(attributes, event, 'src', node.destination);
 }},
 { filter: 'text', makeDelta: (node, attributes) => {
     if (isEmpty(attributes)) {
@@ -33,13 +37,7 @@ export default (parsed) => {
             const converter = converters[i];
             if (node.type == converter.filter) {
                 if (typeof converter.attribute == 'string') {
-                    const attribute = converter.attribute;
-                    if (event.entering) {
-                        attributes[attribute] = true;
-                    } else {
-                        attributes = without(attributes, attribute);
-                        // add node's children as siblings
-                    }
+                    attributes = changeAttribute(attributes, event, converter.attribute, true);
                 } else if (typeof converter.attribute == 'function') {
                     attributes = converter.attribute(node, event, attributes);
                 }
