@@ -56,4 +56,15 @@ describe('toDelta', () => {
 
     expect(result).to.deep.equal(expected);
   });
+
+  it('converts text code block', () => {
+    const input = "```\nline 1\nline 2\n```\n\n";
+    const expected = [
+        { insert: "line 1\nline 2\n", attributes: { "code-block": true } }
+    ];
+
+    var result = toDelta(input);
+
+    expect(result).to.deep.equal(expected);
+  });
 });

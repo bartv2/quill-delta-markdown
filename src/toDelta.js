@@ -32,6 +32,12 @@ const converters = [
 
 // block
 { filter: 'block_quote', lineAttribute: true, attribute: 'blockquote' },
+{ filter: 'code_block', lineAttribute: true, makeDelta: (event, attributes) => {
+    if (!event.entering) {
+        return null;
+    }
+    return { insert: event.node.literal, attributes: {...attributes, 'code-block': true}};
+}},
 { filter: 'heading', lineAttribute: true, makeDelta: (event, attributes) => {
     if (event.entering) {
         return null;
