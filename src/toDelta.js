@@ -1,6 +1,17 @@
-import _ from 'lodash';
 import {isEmpty} from 'lodash';
 import {without} from 'lodash';
+
+const converters = [
+{ filter: 'emph', attribute: 'italic' },
+{ filter: 'strong', attribute: 'bold' },
+{ filter: 'text', makeDelta: (node, attributes) => {
+    if (isEmpty(attributes)) {
+        return {insert: node.literal};
+    } else {
+        return {insert: node.literal, attributes};
+    }
+}}
+];
 
 export default (parsed) => {
     var walker = parsed.walker();
@@ -10,32 +21,30 @@ export default (parsed) => {
 
     while ((event = walker.next())) {
         node = event.node;
-        if (node.type === 'emph') {
-            if (event.entering) {
-                attributes = {
-                    ...attributes,
-                    italic: true
-                
-                };
-            } else {
-                attributes = without(attributes, 'italic');
-            // add Emph node's children as siblings
-            while (node.firstChild) {
-                node.insertBefore(node.firstChild);
-            }
-            // remove the empty Emph node
-            node.unlink()
-            }
-        }
-        if (node.type === 'text') {
-            if (isEmpty(attributes)) {
-                deltas.push({insert: node.literal});
-            } else {
-                deltas.push({insert: node.literal, attributes});
+        for (var i = 0; i < converters.length; i++) {
+            const converter = converters[i];
+            if (node.type == converter.filter) {
+                if (converter.attribute) {
+                    const attribute = converter.attribute;
+                    if (event.entering) {
+                        attributes[attribute] = true;
+                    } else {
+                        attributes = without(attributes, attribute);
+                        // add node's children as siblings
+                        while (node.firstChild) {
+                            node.insertBefore(node.firstChild);
+                        }
+                        // remove the empty node
+                        node.unlink()
+                    }
+                }
+                if (converter.makeDelta) {
+                    deltas.push(converter.makeDelta(node, attributes));
+                }
             }
         }
     }
-    if (deltas[deltas.length-1].insert.indexOf("\n") == -1) {
+    if (isEmpty(deltas) || deltas[deltas.length-1].insert.indexOf("\n") == -1) {
         deltas.push({insert: "\n"});
     }
 

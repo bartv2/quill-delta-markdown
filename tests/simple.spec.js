@@ -14,4 +14,15 @@ describe('toDelta', () => {
     expect(result).to.deep.equal(expected);
   });
 
+  it('converts text with strong', () => {
+    const input = 'Hello **world**';
+    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "bold": true } }, { "insert": "\n" }];
+
+    var reader = new commonmark.Parser();
+    var parsed = reader.parse(input);
+    var result = toDelta(parsed);
+
+    expect(result).to.deep.equal(expected);
+  });
+
 });
