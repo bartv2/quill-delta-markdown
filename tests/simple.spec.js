@@ -28,7 +28,7 @@ describe('toDelta', () => {
 
   it('converts text with link', () => {
     const input = 'Hello [world](url)';
-    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "src": 'url' } }, { "insert": "\n" }];
+    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "link": 'url' } }, { "insert": "\n" }];
 
     var reader = new commonmark.Parser();
     var parsed = reader.parse(input);

@@ -1,12 +1,14 @@
 import {isEmpty} from 'lodash';
-import {without} from 'lodash';
+import {omit} from 'lodash';
+import console from 'console';
 
 function changeAttribute(attributes, event, attribute, value)
 {
     if (event.entering) {
+        attributes = {...attributes};
         attributes[attribute] = value;
     } else {
-        attributes = without(attributes, attribute);
+        attributes = omit(attributes, attribute);
     }
     return attributes;
 }
@@ -14,7 +16,7 @@ const converters = [
 { filter: 'emph', attribute: 'italic' },
 { filter: 'strong', attribute: 'bold' },
 { filter: 'link', attribute: (node, event, attributes) => {
-    return changeAttribute(attributes, event, 'src', node.destination);
+    return changeAttribute(attributes, event, 'link', node.destination);
 }},
 { filter: 'text', makeDelta: (node, attributes) => {
     if (isEmpty(attributes)) {
