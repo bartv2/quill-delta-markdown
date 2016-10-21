@@ -1,15 +1,13 @@
-import {isEmpty} from 'lodash';
-import {omit} from 'lodash';
+import {isEmpty, unset} from 'lodash';
 import console from 'console';
 import commonmark from 'commonmark';
 
 function changeAttribute(attributes, event, attribute, value)
 {
     if (event.entering) {
-        attributes = {...attributes};
         attributes[attribute] = value;
     } else {
-        attributes = omit(attributes, attribute);
+        attributes = unset(attributes, attribute);
     }
     return attributes;
 }
@@ -17,16 +15,25 @@ const converters = [
 { filter: 'emph', attribute: 'italic' },
 { filter: 'strong', attribute: 'bold' },
 { filter: 'link', attribute: (node, event, attributes) => {
-    return changeAttribute(attributes, event, 'link', node.destination);
+    changeAttribute(attributes, event, 'link', node.destination);
 }},
-{ filter: 'text', makeDelta: (node, attributes) => {
+{ filter: 'text', makeDelta: (event, attributes) => {
     if (isEmpty(attributes)) {
-        return {insert: node.literal};
+        return {insert: event.node.literal};
     } else {
-        return {insert: node.literal, attributes};
+        return {insert: event.node.literal, attributes: {...attributes}};
     }
 }}
 ];
+
+function applyAttribute(node, event, attributes, attribute)
+{
+    if (typeof attribute == 'string') {
+        changeAttribute(attributes, event, attribute, true);
+    } else if (typeof attribute == 'function') {
+        attribute(node, event, attributes);
+    }
+}
 
 export default (markdown) => {
     var reader = new commonmark.Parser();
@@ -35,20 +42,25 @@ export default (markdown) => {
     var event, node;
     var deltas = [];
     var attributes = {};
+    var lineAttributes = {};
 
     while ((event = walker.next())) {
         node = event.node;
         for (var i = 0; i < converters.length; i++) {
             const converter = converters[i];
             if (node.type == converter.filter) {
-                if (typeof converter.attribute == 'string') {
-                    attributes = changeAttribute(attributes, event, converter.attribute, true);
-                } else if (typeof converter.attribute == 'function') {
-                    attributes = converter.attribute(node, event, attributes);
+                if (converter.lineAttribute) {
+                    applyAttribute(node, event, lineAttributes, converter.attribute);
+                } else {
+                    applyAttribute(node, event, attributes, converter.attribute);
                 }
                 if (converter.makeDelta) {
-                    deltas.push(converter.makeDelta(node, attributes));
+                    let delta = converter.makeDelta(event, converter.lineAttribute ? lineAttributes : attributes);
+                    if (delta) {
+                        deltas.push(delta);
+                    }
                 }
+                break;
             }
         }
     }
