@@ -12,8 +12,13 @@ function changeAttribute(attributes, event, attribute, value)
     return attributes;
 }
 const converters = [
+// inline
+{ filter: 'code', attribute: 'code' },
+// TODO: underline
+// TODO: strike
 { filter: 'emph', attribute: 'italic' },
 { filter: 'strong', attribute: 'bold' },
+// TODO: script
 { filter: 'link', attribute: (node, event, attributes) => {
     changeAttribute(attributes, event, 'link', node.destination);
 }},
@@ -23,7 +28,21 @@ const converters = [
     } else {
         return {insert: event.node.literal, attributes: {...attributes}};
     }
-}}
+}},
+
+// block
+{ filter: 'block_quote', lineAttribute: true, attribute: 'blockquote' },
+{ filter: 'paragraph', lineAttribute: true, makeDelta: (event, attributes) => {
+    if (event.entering) {
+        return null;
+    }
+
+    if (isEmpty(attributes)) {
+        return { insert: "\n"};
+    } else {
+        return { insert: "\n", attributes: {...attributes}};
+    }
+}},
 ];
 
 function applyAttribute(node, event, attributes, attribute)
