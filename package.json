@@ -1,0 +1,38 @@
+{
+  "name": "quill-delta-markdown",
+  "version": "0.0.0",
+  "description": "To and from Markdown and Quill delta",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tools/testSetup.js \"tests/**/*.spec.js\" --reporter progress",
+    "test:watch": "mocha tools/testSetup.js \"tests/**/*.spec.js\" --reporter progress --watch"
+  },
+  "keywords": [
+    "quill",
+    "delta",
+    "markdown"
+  ],
+  "author": {
+    "name": "Bart Visscher",
+    "email": "bartv@thisnet.nl"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "devDependencies": {
+    "babel-cli": "6.14.0",
+    "babel-core": "6.14.0",
+    "babel-preset-latest": "6.14.0",
+    "babel-preset-stage-1": "6.13.0",
+    "babel-register": "6.14.0",
+    "mocha": "3.0.2"
+  },
+  "dependencies": {
+    "chai": "^3.5.0",
+    "commonmark": "^0.26.0",
+    "lodash": "^4.16.4",
+    "quill-delta": "^3.4.0"
+  }
+}
