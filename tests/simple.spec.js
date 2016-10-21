@@ -1,5 +1,4 @@
 import chai, {expect} from 'chai';
-import commonmark from 'commonmark';
 import toDelta from '../src/toDelta';
 
 describe('toDelta', () => {
@@ -7,9 +6,7 @@ describe('toDelta', () => {
     const input = 'Hello *world*';
     const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "italic": true } }, { "insert": "\n" }];
 
-    var reader = new commonmark.Parser();
-    var parsed = reader.parse(input);
-    var result = toDelta(parsed);
+    var result = toDelta(input);
 
     expect(result).to.deep.equal(expected);
   });
@@ -18,9 +15,7 @@ describe('toDelta', () => {
     const input = 'Hello **world**';
     const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "bold": true } }, { "insert": "\n" }];
 
-    var reader = new commonmark.Parser();
-    var parsed = reader.parse(input);
-    var result = toDelta(parsed);
+    var result = toDelta(input);
 
     expect(result).to.deep.equal(expected);
   });
@@ -30,9 +25,7 @@ describe('toDelta', () => {
     const input = 'Hello [world](url)';
     const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "link": 'url' } }, { "insert": "\n" }];
 
-    var reader = new commonmark.Parser();
-    var parsed = reader.parse(input);
-    var result = toDelta(parsed);
+    var result = toDelta(input);
 
     expect(result).to.deep.equal(expected);
   });

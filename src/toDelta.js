@@ -1,6 +1,7 @@
 import {isEmpty} from 'lodash';
 import {omit} from 'lodash';
 import console from 'console';
+import commonmark from 'commonmark';
 
 function changeAttribute(attributes, event, attribute, value)
 {
@@ -27,7 +28,9 @@ const converters = [
 }}
 ];
 
-export default (parsed) => {
+export default (markdown) => {
+    var reader = new commonmark.Parser();
+    var parsed = reader.parse(markdown);
     var walker = parsed.walker();
     var event, node;
     var deltas = [];
