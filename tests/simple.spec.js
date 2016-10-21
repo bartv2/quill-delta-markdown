@@ -37,4 +37,13 @@ describe('toDelta', () => {
 
     expect(result).to.deep.equal(expected);
   });
+
+  it('converts headings level 1', () => {
+    const input = "# heading\n";
+    const expected = [{ insert: 'heading'}, { insert: "\n", attributes: { header: 1 }}];
+
+    var result = toDelta(input);
+
+    expect(result).to.deep.equal(expected);
+  });
 });
