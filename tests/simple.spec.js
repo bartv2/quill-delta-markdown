@@ -29,6 +29,25 @@ describe('toDelta', () => {
     expect(result).to.deep.equal(expected);
   });
 
+  it('converts text with image', () => {
+    const input = 'Hello ![world](url)';
+    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "image": 'url' } }, { insert: "\n" }];
+
+    var result = toDelta(input);
+
+    expect(result).to.deep.equal(expected);
+  });
+
+
+  it('converts text with image with title', () => {
+    const input = 'Hello ![world](url "title")';
+    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "image": 'url', title: 'title' } }, { insert: "\n" }];
+
+    var result = toDelta(input);
+
+    expect(result).to.deep.equal(expected);
+  });
+
   it('converts multi paragraphs', () => {
     const input = "line 1\n\nline 2\n";
     const expected = [{ insert: 'line 1'}, { insert: "\n" }, { insert: 'line 2' }, { insert: "\n" }];

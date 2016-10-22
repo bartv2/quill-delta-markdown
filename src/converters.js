@@ -49,6 +49,14 @@ const converters = [
     }
 }},
 
+// embeds
+{ filter: 'image', attribute: (node, event, attributes) => {
+    changeAttribute(attributes, event, 'image', node.destination);
+    if (node.title) {
+        changeAttribute(attributes, event, 'title', node.title);
+    }
+}},
+
 ];
 
 export default converters;
