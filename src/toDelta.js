@@ -1,8 +1,9 @@
 import {isEmpty, unset} from 'lodash';
 import console from 'console';
 import commonmark from 'commonmark';
+import converters from './converters';
 
-function changeAttribute(attributes, event, attribute, value)
+export function changeAttribute(attributes, event, attribute, value)
 {
     if (event.entering) {
         attributes[attribute] = value;
@@ -11,54 +12,6 @@ function changeAttribute(attributes, event, attribute, value)
     }
     return attributes;
 }
-const converters = [
-// inline
-{ filter: 'code', attribute: 'code' },
-// TODO: underline
-// TODO: strike
-{ filter: 'emph', attribute: 'italic' },
-{ filter: 'strong', attribute: 'bold' },
-// TODO: script
-{ filter: 'link', attribute: (node, event, attributes) => {
-    changeAttribute(attributes, event, 'link', node.destination);
-}},
-{ filter: 'text', makeDelta: (event, attributes) => {
-    if (isEmpty(attributes)) {
-        return {insert: event.node.literal};
-    } else {
-        return {insert: event.node.literal, attributes: {...attributes}};
-    }
-}},
-
-// block
-{ filter: 'block_quote', lineAttribute: true, attribute: 'blockquote' },
-{ filter: 'code_block', lineAttribute: true, makeDelta: (event, attributes) => {
-    if (!event.entering) {
-        return null;
-    }
-    return { insert: event.node.literal, attributes: {...attributes, 'code-block': true}};
-}},
-{ filter: 'heading', lineAttribute: true, makeDelta: (event, attributes) => {
-    if (event.entering) {
-        return null;
-    }
-    return { insert: "\n", attributes: {...attributes, header: event.node.level}};
-}},
-{ filter: 'list', lineAttribute: true, attribute: (node, event, attributes) => {
-    changeAttribute(attributes, event, 'list', node.listType);
-}},
-{ filter: 'paragraph', lineAttribute: true, makeDelta: (event, attributes) => {
-    if (event.entering) {
-        return null;
-    }
-
-    if (isEmpty(attributes)) {
-        return { insert: "\n"};
-    } else {
-        return { insert: "\n", attributes: {...attributes}};
-    }
-}},
-];
 
 function applyAttribute(node, event, attributes, attribute)
 {
@@ -69,9 +22,8 @@ function applyAttribute(node, event, attributes, attribute)
     }
 }
 
-export default (markdown) => {
-    var reader = new commonmark.Parser();
-    var parsed = reader.parse(markdown);
+function toDelta(markdown) {
+    var parsed = toDelta.commonmark.parse(markdown);
     var walker = parsed.walker();
     var event, node;
     var deltas = [];
@@ -80,8 +32,8 @@ export default (markdown) => {
 
     while ((event = walker.next())) {
         node = event.node;
-        for (var i = 0; i < converters.length; i++) {
-            const converter = converters[i];
+        for (var i = 0; i < toDelta.converters.length; i++) {
+            const converter = toDelta.converters[i];
             if (node.type == converter.filter) {
                 if (converter.lineAttribute) {
                     applyAttribute(node, event, lineAttributes, converter.attribute);
@@ -104,3 +56,8 @@ export default (markdown) => {
 
     return deltas;
 }
+
+toDelta.commonmark = new commonmark.Parser();
+toDelta.converters = converters;
+
+export default toDelta;
