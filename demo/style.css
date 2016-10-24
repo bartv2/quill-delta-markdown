@@ -1,0 +1,14 @@
+.container {
+    width: 1024px;
+    margin: 0 auto;
+}
+#editor-container, textarea, pre {
+  height: 150px;
+}
+textarea, pre {
+    width: 100%;
+    overflow: auto;
+}
+pre {
+    border: groove 2px;
+}

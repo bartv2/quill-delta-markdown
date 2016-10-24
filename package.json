@@ -4,6 +4,7 @@
   "description": "To and from Markdown and Quill delta",
   "main": "index.js",
   "scripts": {
+    "demo": "babel-node tools/demoServer.js",
     "test": "mocha tools/testSetup.js \"tests/**/*.spec.js\" --reporter progress",
     "test:watch": "mocha tools/testSetup.js \"tests/**/*.spec.js\" --reporter progress --watch"
   },
@@ -22,15 +23,26 @@
     "url": ""
   },
   "devDependencies": {
+    "autoprefixer": "^6.5.1",
     "babel-cli": "6.14.0",
     "babel-core": "6.14.0",
+    "babel-loader": "^6.2.5",
     "babel-preset-latest": "6.14.0",
     "babel-preset-stage-1": "6.13.0",
     "babel-register": "6.14.0",
-    "mocha": "3.0.2"
+    "browser-sync": "^2.17.5",
+    "chai": "^3.5.0",
+    "css-loader": "^0.25.0",
+    "html-webpack-plugin": "^2.24.0",
+    "json-loader": "^0.5.4",
+    "mocha": "3.0.2",
+    "postcss-loader": "^1.0.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.2",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.0"
   },
   "dependencies": {
-    "chai": "^3.5.0",
     "commonmark": "^0.26.0",
     "lodash": "^4.16.4",
     "quill-delta": "^3.4.0"
