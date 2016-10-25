@@ -1,4 +1,5 @@
 import toDelta from '../src/toDelta.js';
+import fromDelta from '../src/fromDelta.js';
 require('./style.css');
 import Quill from 'quill';
 import '../node_modules/quill/dist/quill.snow.css';
@@ -23,6 +24,7 @@ var quill = new Quill('#editor-container', {
 quill.on('text-change', function() {
     var contents = quill.getContents();
     output.innerText = JSON.stringify(contents.ops, null, 2);
+    output.nextElementSibling.innerText = fromDelta(contents.ops);
 });
 onInputChange();
 
