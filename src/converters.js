@@ -1,9 +1,19 @@
 import isEmpty from 'lodash/isEmpty';
 import { changeAttribute } from  './toDelta';
 
+function addOnEnter(name) {
+    return (event, attributes) => {
+        if (!event.entering) {
+            return null;
+        }
+        return { insert: event.node.literal, attributes: {...attributes, [name]: true}};
+    };
+}
+
 const converters = [
 // inline
-{ filter: 'code', attribute: 'code' },
+{ filter: 'code', makeDelta: addOnEnter('code')},
+{ filter: 'html_inline', makeDelta: addOnEnter('html_inline')},
 // TODO: underline
 // TODO: strike
 { filter: 'emph', attribute: 'italic' },
@@ -19,15 +29,17 @@ const converters = [
         return {insert: event.node.literal, attributes: {...attributes}};
     }
 }},
+{ filter: 'softbreak', makeDelta: (event, attributes) => {
+    if (isEmpty(attributes)) {
+        return {insert: ' '};
+    } else {
+        return {insert: ' ', attributes: {...attributes}};
+    }
+}},
 
 // block
 { filter: 'block_quote', lineAttribute: true, attribute: 'blockquote' },
-{ filter: 'code_block', lineAttribute: true, makeDelta: (event, attributes) => {
-    if (!event.entering) {
-        return null;
-    }
-    return { insert: event.node.literal, attributes: {...attributes, 'code-block': true}};
-}},
+{ filter: 'code_block', lineAttribute: true, makeDelta: addOnEnter('code-block') },
 { filter: 'heading', lineAttribute: true, makeDelta: (event, attributes) => {
     if (event.entering) {
         return null;
