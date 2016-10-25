@@ -1,5 +1,4 @@
-var cheerio = require('cheerio');
-        var _ = require('lodash');
+var _ = require('lodash');
 
 exports = module.exports = function(ops) {
     return _.trimEnd(convert(ops).render()) + "\n";
@@ -64,26 +63,26 @@ var format = exports.format = {
     },
 
     inline: {
-        italic: function($) {
+        italic: function() {
             return ['*', '*'];
         },
-        bold: function($) {
+        bold: function() {
             return ['**', '**'];
         },
-        link: function($, href) {
+        link: function(href) {
             return ['[', ']('+href+')'];
         }
     },
 
     block: {
-        header: function($, header) {
+        header: function(header) {
             this.open = '#'.repeat(header)+' '+this.open;
         },
         list: {
             group: function() {
                 return new node(['', "\n"])
             },
-            line: function($, type, group) {
+            line: function(type, group) {
                 if (type == 'ordered') {
                     group.count = group.count || 0;
                     var count = ++group.count;
@@ -98,7 +97,7 @@ var format = exports.format = {
 };
 
 function convert(ops) {
-    var $ = cheerio.load(''), group, line, el, activeInline, beginningOfLine;
+    var group, line, el, activeInline, beginningOfLine;
     var root = new node();
 
     function newLine() {
@@ -137,7 +136,7 @@ function convert(ops) {
                                 }
                                 if (!group && fn.group) {
                                     group = {
-                                        el: fn.group($),
+                                        el: fn.group(),
                                         type: k,
                                         value: op.attributes[k],
                                         distance: 0
@@ -152,7 +151,7 @@ function convert(ops) {
                                 fn = fn.line;
                             }
 
-                            fn.call(line, $, op.attributes[k], group);
+                            fn.call(line, op.attributes[k], group);
                             newLine();
                             break;
                         }
@@ -223,7 +222,7 @@ function convert(ops) {
         then.forEach(apply);
 
         function apply(fmt) {
-            var newEl = format.inline[fmt].call(null, $, attrs[fmt]);
+            var newEl = format.inline[fmt].call(null, attrs[fmt]);
             if (_.isArray(newEl)) {
                 newEl = new node(newEl);
             }
