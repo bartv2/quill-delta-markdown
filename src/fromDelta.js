@@ -69,6 +69,9 @@ var format = exports.format = {
         bold: function() {
             return ['**', '**'];
         },
+        code: function() {
+            return ['`', '`'];
+        },
         link: function(href) {
             return ['[', ']('+href+')'];
         }
@@ -77,6 +80,13 @@ var format = exports.format = {
     block: {
         header: function(header) {
             this.open = '#'.repeat(header)+' '+this.open;
+        },
+        blockquote: function(header) {
+            this.open = '> '+this.open;
+        },
+        'code-block': function(header) {
+            this.open = "```\n"+this.open;
+            this.close = this.close+"```\n";
         },
         list: {
             group: function() {
