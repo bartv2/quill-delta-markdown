@@ -1,7 +1,5 @@
 var cheerio = require('cheerio');
         var _ = require('lodash');
-import console from 'console';
-
 
 exports = module.exports = function(ops) {
     return _.trimEnd(convert(ops).render()) + "\n";
@@ -52,21 +50,6 @@ node.prototype.render = function()
     }
 
     return text;
-}
-node.prototype.tree = function()
-{
-    if (this.open) {
-        console.log(this.id, this.open);
-    }
-    if (this.text) {
-        console.log(this.id, this.text);
-    }
-    for (var i = 0; i < this.children.length; i++) {
-        this.children[i].tree();
-    }
-    if (this.close) {
-        console.log(this.id, this.close);
-    }
 }
 node.prototype.parent = function()
 {
@@ -169,7 +152,6 @@ function convert(ops) {
                                 fn = fn.line;
                             }
 
-//                          console.log(k,line, el);
                             fn.call(line, $, op.attributes[k], group);
                             newLine();
                             break;
@@ -185,7 +167,6 @@ function convert(ops) {
                     }
                     applyStyles(op.attributes, ops[i+1] && ops[i+1].attributes);
                     el.append(lines[j]);
-//                         console.log(el);
                     if (j < lines.length-1) {
                         newLine();
                     }
@@ -195,7 +176,7 @@ function convert(ops) {
             }
         }
     }
-// root.tree();
+
     return root;
 
     function applyStyles(attrs, next) {
@@ -250,8 +231,6 @@ function convert(ops) {
             el.append(newEl);
             el = newEl;
         }
-
-
     }
 }
 

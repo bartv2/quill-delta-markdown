@@ -22,7 +22,6 @@ var quill = new Quill('#editor-container', {
 });
 quill.on('text-change', function() {
     var contents = quill.getContents();
-//     console.log(contents);
     output.innerText = JSON.stringify(contents.ops, null, 2);
 });
 onInputChange();

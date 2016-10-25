@@ -1,5 +1,4 @@
 import {isEmpty, unset} from 'lodash';
-import console from 'console';
 import commonmark from 'commonmark';
 import converters from './converters';
 
