@@ -20,7 +20,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/bartv2/quill-delta-markdown.git"
   },
   "devDependencies": {
     "autoprefixer": "^6.5.1",
