@@ -31,7 +31,7 @@ describe('toDelta', () => {
 
   it('converts text with image', () => {
     const input = 'Hello ![world](url)';
-    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "image": 'url' } }, { insert: "\n" }];
+    const expected = [{ insert: 'Hello '}, { insert: { "image": 'url' }, attributes: { alt: 'world' } }, { insert: "\n" }];
 
     var result = toDelta(input);
 
@@ -41,7 +41,7 @@ describe('toDelta', () => {
 
   it('converts text with image with title', () => {
     const input = 'Hello ![world](url "title")';
-    const expected = [{ insert: 'Hello '}, { insert: 'world', attributes: { "image": 'url', title: 'title' } }, { insert: "\n" }];
+    const expected = [{ insert: 'Hello '}, { insert: { "image": 'url' }, attributes: { alt: 'world', title: 'title' } }, { insert: "\n" }];
 
     var result = toDelta(input);
 
